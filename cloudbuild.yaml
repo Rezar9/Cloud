@@ -1,9 +1,9 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '--tag', 'us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/$_SERVICE_NAME:$COMMIT_SHA', '.']
+    args: ['build', '--tag', 'simple-app:$COMMIT_SHA', '.']
     # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/$_SERVICE_NAME:$COMMIT_SHA']
+    args: ['push', 'us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/simple-app:$COMMIT_SHA']
   - name: "gcr.io/cloud-builders/gcloud"
     args:
       [
@@ -11,7 +11,7 @@ steps:
         "deploy",
         "$_SERVICE_NAME",
         "--image",
-        "us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/$_SERVICE_NAME:$COMMIT_SHA",
+        "us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/simple-app:$COMMIT_SHA",
         "--region",
         "$_DEPLOY_REGION",
         "--platform",
@@ -20,7 +20,7 @@ steps:
       ]
     options:
       logging: CLOUD_LOGGING_ONLY
-    images: [ us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/$_SERVICE_NAME:$COMMIT_SHA ]
+    images: [ us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/simple-app:$COMMIT_SHA ]
     substitutions:
       _SERVICE_NAME: simple-spring-app-cicd
       _DEPLOY_REGION: us-central1
