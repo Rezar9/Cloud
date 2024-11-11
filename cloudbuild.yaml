@@ -1,36 +1,26 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '--tag', 'us-west2-docker.pkg.dev/${PROJECT_ID}/quickstart-docker-repo/simple-app:$COMMIT_SHA', '.']
+    args: ['build', '--tag', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA', '.']
     # Push the container image to Container Registry
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'us-west2-docker.pkg.dev/${PROJECT_ID}/quickstart-docker-repo/simple-app:$COMMIT_SHA']
-#  - name: "gcr.io/cloud-builders/gcloud"
-  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'gcloud'
-    timeout: 240s
-    args: [ 'compute', 'instances',
-              'create-with-container', 'my-vm-name',
-              '--container-image',
-              'us-west2-docker.pkg.dev/${PROJECT_ID}/quickstart-docker-repo/simple-app:$COMMIT_SHA' ]
-    env:
-        - 'CLOUDSDK_COMPUTE_REGION=us-west2'
-        - 'CLOUDSDK_COMPUTE_ZONE=us-west2-a'
-#    args:
-#      [
-#        "run",
-#        "deploy",
-#        "$_SERVICE_NAME",
-#        "--image",
-#        "us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/simple-app:$COMMIT_SHA",
-#        "--region",
-#        "$_DEPLOY_REGION",
-#        "--platform",
-#        "managed",
-#        "--allow-unauthenticated"
-#      ]
+    args: ['push', 'gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA']
+  - name: "gcr.io/cloud-builders/gcloud"
+    args:
+      [
+        "run",
+        "deploy",
+        "$_SERVICE_NAME",
+        "--image",
+        "gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA",
+        "--region",
+        "$_DEPLOY_REGION",
+        "--platform",
+        "managed",
+        "--allow-unauthenticated"
+      ]
     options:
       logging: CLOUD_LOGGING_ONLY
-    images: [ us-west2-docker.pkg.dev/first-project-438610/quickstart-docker-repo/simple-app:$COMMIT_SHA ]
+    images: [gcr.io/$PROJECT_ID/$_SERVICE_NAME:$COMMIT_SHA]
     substitutions:
       _SERVICE_NAME: simple-spring-app-cicd
       _DEPLOY_REGION: us-central1
